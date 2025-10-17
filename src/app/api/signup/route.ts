@@ -7,114 +7,114 @@ import { parserInputWithZodSchema } from "@/utils/validations";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  try {
-    await connectToDB();
+	try {
+		await connectToDB();
 
-    const { username, email, password } = await request.json();
-    const { success, message, data } = parserInputWithZodSchema(
-      { username, email, password },
-      userSignupSchema,
-    );
+		const { username, email, password } = await request.json();
+		const { success, message, data } = parserInputWithZodSchema(
+			{ username, email, password },
+			userSignupSchema,
+		);
 
-    if (message && !success && !data) {
-      return NextResponse.json(
-        {
-          message: message,
-        },
-        {
-          status: 400,
-        },
-      );
-    }
+		if (message && !success && !data) {
+			return NextResponse.json(
+				{
+					message: message,
+				},
+				{
+					status: 400,
+				},
+			);
+		}
 
-    // can be combined in one find
-    const existingVerifiedUserByUsername = await Users.findOne({
-      username: data?.username,
-      isVerified: true,
-    });
+		// can be combined in one find
+		const existingVerifiedUserByUsername = await Users.findOne({
+			username: data?.username,
+			isVerified: true,
+		});
 
-    if (existingVerifiedUserByUsername) {
-      return NextResponse.json(
-        {
-          message: "username is already taken",
-          success: false,
-        },
-        { status: 400 },
-      );
-    }
+		if (existingVerifiedUserByUsername) {
+			return NextResponse.json(
+				{
+					message: "username is already taken",
+					success: false,
+				},
+				{ status: 400 },
+			);
+		}
 
-    const existingUserByEmail = await Users.findOne({
-      email: data?.email,
-    });
+		const existingUserByEmail = await Users.findOne({
+			email: data?.email,
+		});
 
-    const hashedPassword = await hashPassword(String(data?.password));
-    // otp
-    const verifyCode = Math.floor(Math.random() * 900000 + 100000).toString(); // random number between 100000 to 999999
-    const expiry = new Date(Date.now() + 3600000);
+		const hashedPassword = await hashPassword(String(data?.password));
+		// otp
+		const verifyCode = Math.floor(Math.random() * 900000 + 100000).toString(); // random number between 100000 to 999999
+		const expiry = new Date(Date.now() + 3600000);
 
-    if (existingUserByEmail) {
-      if (existingUserByEmail.isVerified) {
-        return NextResponse.json(
-          {
-            message: "User already exists with this email",
-            success: false,
-          },
-          { status: 400 },
-        );
-      } else {
-        existingUserByEmail.password = hashedPassword;
-        existingUserByEmail.verifyCode = verifyCode;
-        existingUserByEmail.verifyCodeExpiry = expiry;
+		if (existingUserByEmail) {
+			if (existingUserByEmail.isVerified) {
+				return NextResponse.json(
+					{
+						message: "User already exists with this email",
+						success: false,
+					},
+					{ status: 400 },
+				);
+			} else {
+				existingUserByEmail.password = hashedPassword;
+				existingUserByEmail.verifyCode = verifyCode;
+				existingUserByEmail.verifyCodeExpiry = expiry;
 
-        await existingUserByEmail.save();
-      }
-    } else {
-      const newUser = await Users.create({
-        username: data?.username,
-        email: data?.email,
-        password: hashedPassword,
-        isVerified: false, // optional
-        verifyCode: verifyCode,
-        verifyCodeExpiry: expiry,
-        isAcceptingMessage: true,
-      });
-    }
+				await existingUserByEmail.save();
+			}
+		} else {
+			const newUser = await Users.create({
+				username: data?.username,
+				email: data?.email,
+				password: hashedPassword,
+				isVerified: false, // optional
+				verifyCode: verifyCode,
+				verifyCodeExpiry: expiry,
+				isAcceptingMessage: true,
+			});
+		}
 
-    // sent email
-    const emailSendResponse = await sendVerificationEmail({
-      username: String(data?.username) || "",
-      email: String(data?.email) || "",
-      otp: verifyCode,
-    });
-    // unable to send email
-    if (!emailSendResponse.success) {
-      return NextResponse.json(
-        {
-          message: emailSendResponse.message,
-          success: false,
-        },
-        { status: 500 },
-      );
-    }
+		// sent email
+		const emailSendResponse = await sendVerificationEmail({
+			username: String(data?.username) || "",
+			email: String(data?.email) || "",
+			otp: verifyCode,
+		});
+		// unable to send email
+		if (!emailSendResponse.success) {
+			return NextResponse.json(
+				{
+					message: emailSendResponse.message,
+					success: false,
+				},
+				{ status: 500 },
+			);
+		}
 
-    // email sent successfully
-    return NextResponse.json(
-      {
-        message: "user register successfully , please verify your self",
-        success: true,
-      },
-      { status: 201 },
-    );
-  } catch (error) {
-    console.error(`[Error] while registering user `, error);
-    return NextResponse.json(
-      {
-        message: "Error while registering user",
-        success: false,
-      },
-      {
-        status: 500,
-      },
-    );
-  }
+		// email sent successfully
+		return NextResponse.json(
+			{
+				message: "user register successfully , please verify your self",
+				success: true,
+			},
+			{ status: 201 },
+		);
+	} catch (error) {
+		console.error(`[Error] while registering user `, error);
+		return NextResponse.json(
+			{
+				message: "Error while registering user",
+				success: false,
+			},
+			{
+				status: 500,
+			},
+		);
+	}
 }
