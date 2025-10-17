@@ -64,8 +64,7 @@ export async function POST(request: NextRequest) {
 		} else if (!isCodeNotExpiry) {
 			return NextResponse.json(
 				{
-					message:
-						"verification code has been expiry, please sign up again",
+					message: "verification code has been expiry, please sign up again",
 					success: false,
 				},
 				{ status: 400 },
