@@ -5,7 +5,7 @@ import connectToDB from "./db/dbConnect";
 import Users from "./model/users.model";
 import { comparePassword } from "./utils/bcrypt";
 
-export const nextOption: NextAuthOptions = {
+export const nextAuthOption: NextAuthOptions = {
 	providers: [
 		// Google
 		GoogleProvider({
