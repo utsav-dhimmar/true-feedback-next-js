@@ -5,8 +5,8 @@ interface IUser extends Document {
 	email: string;
 	password: string;
 	isVerified: boolean;
-	verifyCode: string;
-	verifyCodeExpiry: Date;
+	verifyCode?: string;
+	verifyCodeExpiry?: Date;
 	isAcceptingMessages: boolean;
 	createdAt: Date;
 	updatedAt: Date;
