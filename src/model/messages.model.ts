@@ -1,7 +1,7 @@
 import mongoose, { Document, ObjectId, Schema, model } from "mongoose";
 
 export interface IMessage extends Document {
-	autherId: ObjectId;
+	userId: ObjectId; // id of user which message bellongs to the user
 	content: string;
 	createdAt: Date;
 	updatedAt: Date;
@@ -9,7 +9,7 @@ export interface IMessage extends Document {
 
 const messageSchema: Schema<IMessage> = new Schema<IMessage>(
 	{
-		autherId: {
+		userId: {
 			type: Schema.Types.ObjectId,
 			ref: "users",
 			required: [true, "Auther id is required"],
