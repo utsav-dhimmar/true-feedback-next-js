@@ -38,6 +38,15 @@ export async function POST(request: NextRequest) {
 				{ status: 201 },
 			);
 		}
+		if (!user.isAcceptingMessages) {
+			return NextResponse.json(
+				{
+					messag: "user is not accepting messages",
+					success: false,
+				},
+				{ status: 403 },
+			);
+		}
 		const newMessage = await Messages.create({
 			userId: user._id,
 			content: data?.content!,
