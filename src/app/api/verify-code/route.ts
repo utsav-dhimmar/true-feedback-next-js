@@ -7,7 +7,7 @@
 
 import connectToDB from "@/db/dbConnect";
 import Users from "@/model/users.model";
-import { verificationSchema } from "@/schema/verify.schema";
+import { usernameAndVerificationCodeSchema } from "@/schema/verify.schema";
 import { parserInputWithZodSchema } from "@/utils/validations";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -19,13 +19,14 @@ export async function POST(request: NextRequest) {
 
 		const { message, data, success } = parserInputWithZodSchema(
 			{ code: verifyCode, username: decodedUsername },
-			verificationSchema,
+			usernameAndVerificationCodeSchema,
 		);
 
 		if (message && !data && !success) {
 			return NextResponse.json(
 				{
 					message,
+					success: false,
 				},
 				{ status: 400 },
 			);
@@ -64,7 +65,8 @@ export async function POST(request: NextRequest) {
 		} else if (!isCodeNotExpiry) {
 			return NextResponse.json(
 				{
-					message: "verification code has been expiry, please sign up again",
+					message:
+						"verification code has been expiry, please sign up again",
 					success: false,
 				},
 				{ status: 400 },

@@ -1,13 +1,14 @@
 import {
-	Body,
-	Font,
-	Head,
-	Heading,
-	Html,
-	Preview,
-	Row,
-	Section,
-	Text,
+  Body,
+  Button,
+  Font,
+  Head,
+  Heading,
+  Html,
+  Preview,
+  Row,
+  Section,
+  Text,
 } from "@react-email/components";
 
 interface VerificationEmail {
@@ -41,15 +42,25 @@ export default function VerificationEmail({
 					</Row>
 					<Row>
 						<Text>
-							Thank you for registering. Please use the following verification
-							code to complete your registration:
+							Thank you for registering. Please use the following
+							verification code to complete your registration:
 						</Text>
 					</Row>
 					<Row>
 						<Text>{otp}</Text>
 					</Row>
+					<Row>
+						or{" "}
+						<Button
+							style={{ color: "#61dafb", padding: "10px 20px" }}
+							href={`/verify/${username}?code=${otp}`}
+						>
+							Click Here to verify
+						</Button>
+					</Row>
 					<Text>
-						If you did not request this code, please ignore this email.
+						If you did not request this code, please ignore this
+						email.
 					</Text>
 				</Section>
 			</Body>
