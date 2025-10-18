@@ -12,7 +12,7 @@ export async function sendVerificationEmail({
 	otp: string;
 }): Promise<ApiResponse> {
 	try {
-		const sendEmailResponse = resend.emails.send({
+		const sendEmailResponse = await resend.emails.send({
 			from: "True Feedback <onboarding@resend.dev>",
 			to: email,
 			subject: "Verification code for true feedback",
