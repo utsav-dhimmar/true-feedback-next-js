@@ -10,39 +10,71 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { userSignInSchema } from "@/schema/signup.schema";
+import { userSignupSchema } from "@/schema/signup.schema";
 import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
+import { Loader } from "lucide-react";
 import Link from "next/link";
+
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useDebounceValue } from "usehooks-ts";
 import * as z from "zod";
 
-type Inputs = z.infer<typeof userSignInSchema>;
+type Inputs = z.infer<typeof userSignupSchema>;
 
-export default function SignInPage() {
+export default function SignupPage() {
+	const [username, setUsername] = useState("");
+	const [usernameMessage, setUsernameMessage] = useState("");
+	const [isUsernameChecking, setIsUsernameChecking] = useState(false);
 	const [loading, setLoading] = useState(false);
-
+	const [debouceUsername, setDebouceUsername] = useDebounceValue(
+		username,
+		500,
+	);
 	const router = useRouter();
 
 	const form = useForm<Inputs>({
-		resolver: zodResolver(userSignInSchema),
+		resolver: zodResolver(userSignupSchema),
 		defaultValues: {
+			username: debouceUsername,
 			email: "",
 			password: "",
 		},
 	});
 
+	useEffect(() => {
+		const checkUserName = async () => {
+			if (debouceUsername) {
+				setIsUsernameChecking(true);
+				try {
+					const uniqueUsernameResponse = await axios.get<ApiResponse>(
+						`/api/unique-username-check?username=${debouceUsername}`,
+					);
+					setUsernameMessage(uniqueUsernameResponse.data.message);
+				} catch (error) {
+					console.log(error);
+					const axiosErrors = error as AxiosError<ApiResponse>;
+					setUsernameMessage(
+						axiosErrors?.response?.data?.message ??
+							"error in username check",
+					);
+				} finally {
+					setIsUsernameChecking(false);
+				}
+			}
+		};
+		checkUserName();
+	}, [debouceUsername]);
+
 	const onSubmit: SubmitHandler<Inputs> = async (data, e) => {
-		toast.warning("backend communication is pending");
-		return;
 		try {
 			setLoading(true);
 			const signInResponse = await axios.post<ApiResponse>(
-				"/api/auth/sign-in",
+				"/api/sign-up",
 				data,
 			);
 			if (signInResponse.status === 201) {
@@ -78,6 +110,41 @@ export default function SignInPage() {
 						onSubmit={form.handleSubmit(onSubmit)}
 						className="space-y-2.5"
 					>
+						{/* username */}
+						<FormField
+							name="username"
+							control={form.control}
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Username</FormLabel>
+									<FormControl>
+										<Input
+											{...field}
+											type="text"
+											onChange={e => {
+												field.onChange(e);
+												setUsername(e.target.value);
+											}}
+										/>
+									</FormControl>
+									{isUsernameChecking && <Loader />}
+									{usernameMessage && (
+										<FormMessage className="text-primary">
+											{usernameMessage}
+										</FormMessage>
+									)}
+									{form.formState.errors.username && (
+										<FormMessage>
+											{
+												form.formState.errors.username
+													.message
+											}
+										</FormMessage>
+									)}
+								</FormItem>
+							)}
+						/>
+
 						{/* email */}
 						<FormField
 							name="email"
