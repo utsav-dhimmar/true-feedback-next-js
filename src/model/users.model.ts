@@ -32,6 +32,10 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
 				"Enter valid password",
 			], // copy from regex101 LOL
 		},
+		password: {
+			type: String,
+			required: [true, "password is required"],
+		},
 		isVerified: {
 			type: Boolean,
 			default: false,
