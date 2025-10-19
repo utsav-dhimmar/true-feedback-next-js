@@ -1,6 +1,6 @@
 import { nextAuthOption } from "@/auth";
 import connectToDB from "@/db/dbConnect";
-import Users from "@/model/users.model";
+import Messages from "@/model/messages.model";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -19,32 +19,24 @@ export async function GET(request: NextRequest) {
 			);
 		}
 		const user = session.user;
-		const userId = new mongoose.Schema.Types.ObjectId(user._id!);
+		const userId = new mongoose.Types.ObjectId(user._id!);
 
 		// todo add more data if require
 
-		const response = await Users.aggregate([
+		const response = await Messages.aggregate([
 			{
 				// find data for current user , not from all
 				$match: {
-					_id: userId,
-				},
-			},
-			{
-				// get all messages of the user
-				$lookup: {
-					from: "messages",
-					localField: "_id",
-					foreignField: "userId",
-					as: "messages",
+					userId: userId,
 				},
 			},
 			{
 				$sort: {
-					"messages.createdAt": -1,
+					createdAt: -1,
 				},
 			},
 		]);
+		// console.log("get-message response", response);
 		if (!response) {
 			return NextResponse.json(
 				{
