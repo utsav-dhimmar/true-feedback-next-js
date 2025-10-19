@@ -13,7 +13,8 @@ import { Spinner } from "@/components/ui/spinner";
 import { userSignInSchema } from "@/schema/signup.schema";
 import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -37,20 +38,34 @@ export default function SignInPage() {
 	});
 
 	const onSubmit: SubmitHandler<Inputs> = async (data, e) => {
-		toast.warning("backend communication is pending");
-		return;
+		// toast.warning("backend communication is pending");
+		// return;
 		try {
 			setLoading(true);
-			const signInResponse = await axios.post<ApiResponse>(
-				"/api/auth/sign-in",
-				data,
-			);
-			if (signInResponse.status === 201) {
-				toast.success(signInResponse.data.message);
-				router.push("/sign-in");
+			const res = await signIn("Credentials", {
+				redirect: false,
+				email: data.email,
+				password: data.password,
+			});
+			console.log(res);
+			if (res?.error) {
+				toast.error("Login failed", {
+					description: res.error ?? "Incorrect credentials",
+				});
 			} else {
-				toast.warning(signInResponse.data.message);
+				toast.success("Login success");
+				router.push("/dashboard");
 			}
+			// const signInResponse = await axios.post<ApiResponse>(
+			// 	"/api/auth/sign-in",
+			// 	data,
+			// );
+			// if (signInResponse.status === 201) {
+			// 	toast.success(signInResponse.data.message);
+			// 	router.push("/");
+			// } else {
+			// 	toast.warning(signInResponse.data.message);
+			// }
 		} catch (error) {
 			const axiosErrors = error as AxiosError<ApiResponse>;
 			const message =
@@ -64,7 +79,7 @@ export default function SignInPage() {
 
 	return (
 		<div className="flex justify-center items-center min-h-screen bg-gray-800">
-			<div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+			<div className="w-full max-w-sm md:max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
 				<div className="text-center">
 					<h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
 						Join True Feedback
@@ -133,11 +148,17 @@ export default function SignInPage() {
 						>
 							{loading && <Spinner />} Submit
 						</Button>
+						<Button
+							onClick={() => signIn("google")}
+							className="w-full"
+						>
+							Coutine With Google
+						</Button>
 						<div className="text-center mt-4">
 							<p>
-								Already a member?{" "}
+								Not a member?{" "}
 								<Link
-									href="/sign-in"
+									href="/sign-up"
 									className="text-blue-600 hover:text-blue-800 hover:underline"
 								>
 									Sign in
