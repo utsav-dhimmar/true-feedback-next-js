@@ -1,12 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
@@ -96,7 +96,7 @@ export default function SignupPage() {
 
 	return (
 		<div className="flex justify-center items-center min-h-screen bg-gray-800">
-			<div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+			<div className="w-full max-w-sm md:max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
 				<div className="text-center">
 					<h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
 						Join True Feedback

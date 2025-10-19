@@ -7,23 +7,23 @@ import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Spinner } from "@/components/ui/spinner";
 import {
-  usernameAndVerificationCodeSchema,
-  verificationSchema,
+    usernameAndVerificationCodeSchema,
+    verificationSchema,
 } from "@/schema/verify.schema";
 import { ApiResponse } from "@/types/ApiResponse";
 import axios, { AxiosError } from "axios";
@@ -36,7 +36,7 @@ export default function VerifyPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const code = searchParams.get("code")?.slice(0, 6);
-	console.log(code);
+	// console.log(code);
 	const { username } = useParams<{ username: string }>();
 	const [message, setMessage] = useState("");
 	const [isIssue, setIsIssue] = useState(false);
@@ -49,32 +49,33 @@ export default function VerifyPage() {
 		},
 	});
 
-	useEffect(() => {
-		const checkIssue = () => {
-			if (username) {
-				const result = usernameAndVerificationCodeSchema.safeParse({
-					username,
-					code,
-				});
+	const checkIssue = (username: string, code: string) => {
+		if (username && code) {
+			const result = usernameAndVerificationCodeSchema.safeParse({
+				username,
+				code,
+			});
 
-				if (result.success === false) {
-					let errorMessage = result.error?.issues
-						.map(({ message }) => message)
-						.join(", ");
-					setIsIssue(true);
-					setMessage(errorMessage);
-					toast.error(errorMessage);
-				}
+			if (result.success === false) {
+				let errorMessage = result.error?.issues
+					.map(({ message }) => message)
+					.join(", ");
+				setIsIssue(true);
+				setMessage(errorMessage);
+				toast.error(errorMessage);
 			}
-		};
-		checkIssue();
-		console.log(message);
+		}
+	};
+
+	useEffect(() => {
+		checkIssue(username, "");
 	}, [username, message]);
 
 	async function onSubmit(data: Input) {
 		try {
 			console.log(data);
 			setLoading(true);
+
 			const verifyCodeResponse = await axios.post<ApiResponse>(
 				`/api/verify-code/`,
 				{
@@ -82,9 +83,10 @@ export default function VerifyPage() {
 					username,
 				},
 			);
+
 			if (verifyCodeResponse.status === 200) {
 				toast.success(verifyCodeResponse.data.message);
-				router.push("/");
+				router.push("/sign-in");
 			} else {
 				toast.warning(verifyCodeResponse.data.message);
 			}
@@ -100,7 +102,7 @@ export default function VerifyPage() {
 
 	return (
 		<div className="flex justify-center items-center min-h-screen bg-gray-500 ">
-			<div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+			<div className="w-full max-w-sm md:max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
 				<div className="text-center">
 					<h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
 						Verify Your Account

@@ -19,5 +19,6 @@ export const usernameAndVerificationCodeSchema = z.object({
 		})
 		.length(6, {
 			error: "Verification code must be 6 digit",
-		}),
+		})
+		.optional(),
 });

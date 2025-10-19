@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
 			return NextResponse.json(
 				{
 					message: message,
+					sucess: false,
 				},
 				{
 					status: 400,
@@ -49,7 +50,9 @@ export async function POST(request: NextRequest) {
 
 		const hashedPassword = await hashPassword(String(data?.password));
 		// otp
-		const verifyCode = Math.floor(Math.random() * 900000 + 100000).toString(); // random number between 100000 to 999999
+		const verifyCode = Math.floor(
+			Math.random() * 900000 + 100000,
+		).toString(); // random number between 100000 to 999999
 		const expiry = new Date(Date.now() + 3600000);
 
 		if (existingUserByEmail) {
@@ -100,7 +103,7 @@ export async function POST(request: NextRequest) {
 		// email sent successfully
 		return NextResponse.json(
 			{
-				message: "user register successfully , please verify your self",
+				message: "user register successfully, please verify your self",
 				success: true,
 			},
 			{ status: 201 },
