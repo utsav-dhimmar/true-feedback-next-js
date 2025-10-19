@@ -36,7 +36,6 @@ export const nextAuthOption: NextAuthOptions = {
 					const user = await Users.findOne({
 						email: email,
 					});
-					console.log(user);
 					if (!user) {
 						throw new Error("User not found with this email");
 					}
@@ -50,6 +49,7 @@ export const nextAuthOption: NextAuthOptions = {
 					if (!isCorrectPassword) {
 						throw new Error("Invalid Credentials");
 					} else {
+						// console.log("from authorize", user);
 						return user;
 					}
 				} catch (error: any) {
@@ -61,27 +61,42 @@ export const nextAuthOption: NextAuthOptions = {
 	],
 	callbacks: {
 		async jwt({ token, user }) {
+			// console.log("start of jwt ", "token:- ", token, "user:- ", user);
 			if (user) {
 				token._id = user._id?.toString();
 				token.isVerified = user.isVerified;
 				token.isAcceptingMessages = user.isAcceptingMessages;
 			}
+			// console.log("End of jwt After storing values in token","user:- ", user, "token:- ", token);
 			return token;
 		},
-		async session({ session, user }) {
-			if (user) {
-				session.user._id = user._id;
-				session.user.isAcceptingMessages = user.isAcceptingMessages;
-				session.user.isVerified = user.isVerified;
+		async session({ session, token }) {
+			// console.log("Start of session", "session:- ", session, "token:- ", token);
+			if (token) {
+				session.user._id = token._id?.toString();
+				session.user.isAcceptingMessages = token.isAcceptingMessages;
+				session.user.isVerified = token.isVerified;
 			}
+			// console.log("End of session After storing values in session","session:- ", session, "token:- ", token);
 			return session;
 		},
 	},
 	secret: process.env.NEXTAUTH_SECRET!,
 	pages: {
-		signIn: "/signin",
+		signIn: "/sign-in",
 	},
 	session: {
 		strategy: "jwt",
+	},
+	logger: {
+		error(code, metadata) {
+			console.error("error", code, metadata);
+		},
+		warn(code) {
+			console.warn("warn", code);
+		},
+		debug(code, metadata) {
+			console.debug("debug", code, metadata);
+		},
 	},
 };
