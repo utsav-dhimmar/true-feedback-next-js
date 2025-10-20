@@ -4,7 +4,7 @@ import { userSignupSchema } from "@/schema/signup.schema";
 import { hashPassword } from "@/utils/bcrypt";
 import { sendVerificationEmail } from "@/utils/email/verificationEmail";
 import { parserInputWithZodSchema } from "@/utils/validations";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
 	try {
@@ -103,7 +103,8 @@ export async function POST(request: NextRequest) {
 		// email sent successfully
 		return NextResponse.json(
 			{
-				message: "user register successfully, please verify your self",
+				message:
+					"You have registered successfully! Please verify your account by entering the OTP sent to your email address.",
 				success: true,
 			},
 			{ status: 201 },
