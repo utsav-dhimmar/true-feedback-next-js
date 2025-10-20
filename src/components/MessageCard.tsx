@@ -2,15 +2,15 @@
 
 import type { IMessageCard } from "@/app/(app)/dashboard/page";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import type { ApiResponse } from "@/types/ApiResponse";
 import axios, { type AxiosError } from "axios";
@@ -57,22 +57,16 @@ export default function MessageCard({ message, onMessageDelete }: MessageCard) {
 							<AlertDialogContent>
 								<AlertDialogHeader>
 									<AlertDialogTitle>
-										Do you really want to delete the
-										message?
+										Do you really want to delete the message?
 									</AlertDialogTitle>
 									<AlertDialogDescription>
-										This action cannot be undone. This will
-										permanently delete this messages from
-										our servers.
+										This action cannot be undone. This will permanently delete
+										this messages from our servers.
 									</AlertDialogDescription>
 								</AlertDialogHeader>
 								<AlertDialogFooter>
-									<AlertDialogCancel>
-										Cancel
-									</AlertDialogCancel>
-									<AlertDialogAction
-										onClick={handleMessageDelete}
-									>
+									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<AlertDialogAction onClick={handleMessageDelete}>
 										Continue
 									</AlertDialogAction>
 								</AlertDialogFooter>

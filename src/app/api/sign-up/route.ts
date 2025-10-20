@@ -50,9 +50,7 @@ export async function POST(request: NextRequest) {
 
 		const hashedPassword = await hashPassword(String(data?.password));
 		// otp
-		const verifyCode = Math.floor(
-			Math.random() * 900000 + 100000,
-		).toString(); // random number between 100000 to 999999
+		const verifyCode = Math.floor(Math.random() * 900000 + 100000).toString(); // random number between 100000 to 999999
 		const expiry = new Date(Date.now() + 3600000);
 
 		if (existingUserByEmail) {

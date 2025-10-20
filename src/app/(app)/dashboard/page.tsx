@@ -51,7 +51,7 @@ export default function DashboardPage() {
 
 	const handleMessageDelete = (messageId: string) => {
 		setAllMessages(
-			allMessage?.filter(message => message._id.toString() !== messageId),
+			allMessage?.filter((message) => message._id.toString() !== messageId),
 		);
 	};
 
@@ -112,12 +112,10 @@ export default function DashboardPage() {
 
 	return (
 		<main>
-			<div className="my-6 mx-2 md:mx-8 lg:mx-auto p-2 bg-white rounded w-full max-w-6xl">
+			<div className="my-6  md:mx-8 lg:mx-auto p-2 bg-white rounded w-full max-w-6xl">
 				<h1 className="text-4xl font-bold mb-2">User Dashboard</h1>
 				<div className="mb-4">
-					<h2 className="text-lg font-bold mb-2">
-						Copy your unique link
-					</h2>
+					<h2 className="text-lg font-bold mb-2">Copy your unique link</h2>
 					<div className="flex items-center">
 						<input
 							type="text"
@@ -146,7 +144,7 @@ export default function DashboardPage() {
 				<Button
 					className="mt-4"
 					variant="outline"
-					onClick={e => {
+					onClick={(e) => {
 						e.preventDefault();
 						fetchData();
 					}}
@@ -159,7 +157,7 @@ export default function DashboardPage() {
 				</Button>
 				<div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
 					{allMessage && allMessage.length > 0 ? (
-						allMessage.map(messageData => (
+						allMessage.map((messageData) => (
 							<MessageCard
 								message={messageData}
 								key={messageData._id}

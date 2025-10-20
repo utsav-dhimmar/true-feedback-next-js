@@ -1,12 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
@@ -31,10 +31,7 @@ export default function SignupPage() {
 	const [usernameMessage, setUsernameMessage] = useState("");
 	const [isUsernameChecking, setIsUsernameChecking] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [debouceUsername, setDebouceUsername] = useDebounceValue(
-		username,
-		500,
-	);
+	const [debouceUsername, setDebouceUsername] = useDebounceValue(username, 500);
 	const router = useRouter();
 
 	const form = useForm<Inputs>({
@@ -59,8 +56,7 @@ export default function SignupPage() {
 					console.log(error);
 					const axiosErrors = error as AxiosError<ApiResponse>;
 					setUsernameMessage(
-						axiosErrors?.response?.data?.message ??
-							"error in username check",
+						axiosErrors?.response?.data?.message ?? "error in username check",
 					);
 				} finally {
 					setIsUsernameChecking(false);
@@ -86,8 +82,7 @@ export default function SignupPage() {
 		} catch (error) {
 			const axiosErrors = error as AxiosError<ApiResponse>;
 			const message =
-				axiosErrors?.response?.data?.message ??
-				"error in username check";
+				axiosErrors?.response?.data?.message ?? "error in username check";
 			toast.error(message);
 		} finally {
 			setLoading(false);
@@ -101,15 +96,10 @@ export default function SignupPage() {
 					<h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
 						Join True Feedback
 					</h1>
-					<p className="mb-4">
-						Sign up to start your anonymous adventure
-					</p>
+					<p className="mb-4">Sign up to start your anonymous adventure</p>
 				</div>
 				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						className="space-y-2.5"
-					>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2.5">
 						{/* username */}
 						<FormField
 							name="username"
@@ -121,7 +111,7 @@ export default function SignupPage() {
 										<Input
 											{...field}
 											type="text"
-											onChange={e => {
+											onChange={(e) => {
 												field.onChange(e);
 												setUsername(e.target.value);
 											}}
@@ -135,10 +125,7 @@ export default function SignupPage() {
 									)}
 									{form.formState.errors.username && (
 										<FormMessage>
-											{
-												form.formState.errors.username
-													.message
-											}
+											{form.formState.errors.username.message}
 										</FormMessage>
 									)}
 								</FormItem>
@@ -157,10 +144,7 @@ export default function SignupPage() {
 									</FormControl>
 									{form.formState.errors.email && (
 										<FormMessage>
-											{
-												form.formState.errors.email
-													.message
-											}
+											{form.formState.errors.email.message}
 										</FormMessage>
 									)}
 								</FormItem>
@@ -183,21 +167,14 @@ export default function SignupPage() {
 									</FormControl>
 									{form.formState.errors.password && (
 										<FormMessage>
-											{
-												form.formState.errors.password
-													.message
-											}
+											{form.formState.errors.password.message}
 										</FormMessage>
 									)}
 								</FormItem>
 							)}
 						/>
 
-						<Button
-							disabled={loading}
-							type="submit"
-							className="w-full"
-						>
+						<Button disabled={loading} type="submit" className="w-full">
 							{loading && <Spinner />} Submit
 						</Button>
 						<div className="text-center mt-4">

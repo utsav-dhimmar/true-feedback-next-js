@@ -2,23 +2,23 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
 } from "@/components/ui/form";
 import {
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSlot,
+	InputOTP,
+	InputOTPGroup,
+	InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Spinner } from "@/components/ui/spinner";
 import {
-    usernameAndVerificationCodeSchema,
-    verificationSchema,
+	usernameAndVerificationCodeSchema,
+	verificationSchema,
 } from "@/schema/verify.schema";
 import type { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -106,56 +106,30 @@ export default function VerifyPage() {
 					<h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
 						Verify Your Account
 					</h1>
-					<p className="mb-4">
-						Enter the verification code sent to your email
-					</p>
+					<p className="mb-4">Enter the verification code sent to your email</p>
 				</div>
 				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						className=" space-y-6"
-					>
+					<form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
 						<FormField
 							control={form.control}
 							name="code"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel className="">
-										One-Time Password
-									</FormLabel>
+									<FormLabel className="">One-Time Password</FormLabel>
 									<FormControl>
 										<InputOTP maxLength={6} {...field}>
 											<InputOTPGroup>
-												<InputOTPSlot
-													index={0}
-													className="w-15 h-15"
-												/>
-												<InputOTPSlot
-													index={1}
-													className="w-15 h-15"
-												/>
-												<InputOTPSlot
-													index={2}
-													className="w-15 h-15"
-												/>
-												<InputOTPSlot
-													index={3}
-													className="w-15 h-15"
-												/>
-												<InputOTPSlot
-													index={4}
-													className="w-15 h-15"
-												/>
-												<InputOTPSlot
-													index={5}
-													className="w-15 h-15"
-												/>
+												<InputOTPSlot index={0} className="w-15 h-15" />
+												<InputOTPSlot index={1} className="w-15 h-15" />
+												<InputOTPSlot index={2} className="w-15 h-15" />
+												<InputOTPSlot index={3} className="w-15 h-15" />
+												<InputOTPSlot index={4} className="w-15 h-15" />
+												<InputOTPSlot index={5} className="w-15 h-15" />
 											</InputOTPGroup>
 										</InputOTP>
 									</FormControl>
 									<FormDescription className="text-white">
-										Please enter the one-time password sent
-										to your email.
+										Please enter the one-time password sent to your email.
 									</FormDescription>
 									<FormMessage />
 								</FormItem>

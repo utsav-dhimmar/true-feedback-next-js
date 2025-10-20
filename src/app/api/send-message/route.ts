@@ -1,7 +1,7 @@
 import connectToDB from "@/db/dbConnect";
 import Messages from "@/model/messages.model";
 import Users from "@/model/users.model";
-import { messageSchema } from "@/schema/message.schema";
+import { messageBackendSchema } from "@/schema/message.schema";
 import { parserInputWithZodSchema } from "@/utils/validations";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
 		const { message, success, data } = parserInputWithZodSchema(
 			{ content, username },
-			messageSchema,
+			messageBackendSchema,
 		);
 
 		if (message && !success && !data) {
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
 		if (!user.isAcceptingMessages) {
 			return NextResponse.json(
 				{
-					messag: "user is not accepting messages",
+					message: "user is not accepting messages",
 					success: false,
 				},
 				{ status: 403 },
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
 		return NextResponse.json(
 			{
-				messag: "message successfully sent",
+				message: "message successfully sent",
 				success: true,
 			},
 			{ status: 201 },

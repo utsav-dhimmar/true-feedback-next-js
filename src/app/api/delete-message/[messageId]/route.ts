@@ -34,13 +34,13 @@ export async function DELETE(
 			);
 		}
 		const message = await Messages.findById(messageId);
-		console.log(
-			"from the delete ",
-			"message.userId",
-			message?.userId.toString(),
-			"session: ",
-			session,
-		);
+		// console.log(
+		// 	"from the delete ",
+		// 	"message.userId",
+		// 	message?.userId.toString(),
+		// 	"session: ",
+		// 	session,
+		// );
 		if (message?.userId.toString() !== user?._id?.toString()) {
 			return NextResponse.json(
 				{
@@ -50,8 +50,7 @@ export async function DELETE(
 				{ status: 401 },
 			);
 		}
-		const messageDeleteResponse =
-			await Messages.findByIdAndDelete(messageId);
+		const messageDeleteResponse = await Messages.findByIdAndDelete(messageId);
 
 		if (!messageDeleteResponse) {
 			throw new Error("unable to delete message");
