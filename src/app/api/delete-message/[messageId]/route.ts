@@ -1,3 +1,4 @@
+import { nextAuthOption } from "@/auth";
 import connectToDB from "@/db/dbConnect";
 import Messages from "@/model/messages.model";
 import { isValidObjectId } from "mongoose";
@@ -6,12 +7,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
 	request: NextRequest,
-	{ params }: { params: { messageId: string } },
+	{ params }: { params: Promise<{ messageId: string }> },
 ) {
 	try {
 		await connectToDB();
-		const { messageId } = params;
-		const session = await getServerSession();
+		const { messageId } = await params;
+		const session = await getServerSession(nextAuthOption);
 		if (!session || !session?.user) {
 			return NextResponse.json(
 				{
@@ -23,7 +24,7 @@ export async function DELETE(
 		}
 		const user = session.user;
 		// const userId = new mongoose.Schema.Types.ObjectId(user._id!);
-		if (isValidObjectId(messageId)) {
+		if (!isValidObjectId(messageId)) {
 			return NextResponse.json(
 				{
 					message: "Invalid object id, please try again",
@@ -33,7 +34,14 @@ export async function DELETE(
 			);
 		}
 		const message = await Messages.findById(messageId);
-		if (message?.userId !== user._id) {
+		console.log(
+			"from the delete ",
+			"message.userId",
+			message?.userId.toString(),
+			"session: ",
+			session,
+		);
+		if (message?.userId.toString() !== user?._id?.toString()) {
 			return NextResponse.json(
 				{
 					message: "This messages is not belongs to you :)",
