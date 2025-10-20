@@ -1,4 +1,4 @@
-import { ApiResponse } from "@/types/ApiResponse";
+import type { ApiResponse } from "@/types/ApiResponse";
 import VerificationEmail from "../../../emails/verification-email";
 import { resend } from "../resend";
 
@@ -12,7 +12,7 @@ export async function sendVerificationEmail({
 	otp: string;
 }): Promise<ApiResponse> {
 	try {
-		const sendEmailResponse = await resend.emails.send({
+		await resend.emails.send({
 			from: "True Feedback <onboarding@resend.dev>",
 			to: email,
 			subject: "Verification code for true feedback",

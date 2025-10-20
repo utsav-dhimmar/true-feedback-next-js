@@ -1,14 +1,14 @@
 import {
-  Body,
-  Button,
-  Font,
-  Head,
-  Heading,
-  Html,
-  Preview,
-  Row,
-  Section,
-  Text,
+    Body,
+    Button,
+    Font,
+    Head,
+    Heading,
+    Html,
+    Preview,
+    Row,
+    Section,
+    Text,
 } from "@react-email/components";
 
 interface VerificationEmail {
@@ -53,7 +53,7 @@ export default function VerificationEmail({
 						or{" "}
 						<Button
 							style={{ color: "#61dafb", padding: "10px 20px" }}
-							href={`${process.env.DOMAIN_URL!}/verify/${username}?code=${otp}`}
+							href={`${process.env.DOMAIN_URL}/verify/${username}?code=${otp}`}
 						>
 							Click Here to verify
 						</Button>
