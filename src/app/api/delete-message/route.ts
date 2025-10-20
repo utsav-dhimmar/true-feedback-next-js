@@ -1,5 +1,6 @@
 import connectToDB from "@/db/dbConnect";
 import Messages from "@/model/messages.model";
+import { isValidObjectId } from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -22,6 +23,15 @@ export async function DELETE(
 		}
 		const user = session.user;
 		// const userId = new mongoose.Schema.Types.ObjectId(user._id!);
+		if (isValidObjectId(messageId)) {
+			return NextResponse.json(
+				{
+					message: "Invalid object id, please try again",
+					success: false,
+				},
+				{ status: 400 },
+			);
+		}
 		const message = await Messages.findById(messageId);
 		if (message?.userId !== user._id) {
 			return NextResponse.json(
