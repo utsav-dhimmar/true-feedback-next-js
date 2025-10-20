@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, model } from "mongoose";
+import mongoose, { type Document, Schema, model } from "mongoose";
 
 interface IUser extends Document {
 	username: string;
@@ -28,7 +28,7 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
 			trim: true,
 			lowercase: true,
 			match: [
-				/(^[a-zA-Z0-9_.]+[@]{1}[a-z0-9]+[\.][a-z]+$)/gm,
+				/(^[a-zA-Z0-9_.]+[@]{1}[a-z0-9]+[.][a-z]+$)/gm,
 				"Enter valid password",
 			], // copy from regex101 LOL
 		},

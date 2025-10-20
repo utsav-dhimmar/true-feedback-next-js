@@ -1,10 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -25,10 +20,14 @@ import {
     usernameAndVerificationCodeSchema,
     verificationSchema,
 } from "@/schema/verify.schema";
-import { ApiResponse } from "@/types/ApiResponse";
-import axios, { AxiosError } from "axios";
+import type { ApiResponse } from "@/types/ApiResponse";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios, { type AxiosError } from "axios";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import type { z } from "zod";
 
 type Input = z.infer<typeof verificationSchema>;
 
@@ -57,7 +56,7 @@ export default function VerifyPage() {
 			});
 
 			if (result.success === false) {
-				let errorMessage = result.error?.issues
+				const errorMessage = result.error?.issues
 					.map(({ message }) => message)
 					.join(", ");
 				setIsIssue(true);
@@ -69,7 +68,7 @@ export default function VerifyPage() {
 
 	useEffect(() => {
 		checkIssue(username, "");
-	}, [username, message]);
+	}, [username]);
 
 	async function onSubmit(data: Input) {
 		try {

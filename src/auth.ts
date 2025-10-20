@@ -1,4 +1,4 @@
-import { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import connectToDB from "./db/dbConnect";
@@ -49,7 +49,7 @@ export const nextAuthOption: NextAuthOptions = {
 					if (!isCorrectPassword) {
 						throw new Error("Invalid Credentials");
 					} else {
-						// console.log("from authorize", user);
+						console.log("from authorize", user);
 						return user;
 					}
 				} catch (error: any) {
@@ -66,18 +66,38 @@ export const nextAuthOption: NextAuthOptions = {
 				token._id = user._id?.toString();
 				token.isVerified = user.isVerified;
 				token.isAcceptingMessages = user.isAcceptingMessages;
+				token.username = user.username;
 			}
-			// console.log("End of jwt After storing values in token","user:- ", user, "token:- ", token);
+			// console.log(
+			// 	"End of jwt After storing values in token",
+			// 	"user:- ",
+			// 	user,
+			// 	"token:- ",
+			// 	token,
+			// );
 			return token;
 		},
 		async session({ session, token }) {
-			// console.log("Start of session", "session:- ", session, "token:- ", token);
+			// console.log(
+			// 	"Start of session",
+			// 	"session:- ",
+			// 	session,
+			// 	"token:- ",
+			// 	token,
+			// );
 			if (token) {
 				session.user._id = token._id?.toString();
 				session.user.isAcceptingMessages = token.isAcceptingMessages;
 				session.user.isVerified = token.isVerified;
+				session.user.username = token.username;
 			}
-			// console.log("End of session After storing values in session","session:- ", session, "token:- ", token);
+			// console.log(
+			// 	"End of session After storing values in session",
+			// 	"session:- ",
+			// 	session,
+			// 	"token:- ",
+			// 	token,
+			// );
 			return session;
 		},
 	},

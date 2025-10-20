@@ -1,4 +1,4 @@
-import { ZodObject, ZodRawShape } from "zod";
+import type { ZodObject, ZodRawShape } from "zod";
 
 export function parserInputWithZodSchema<T extends ZodRawShape>(
 	data: unknown,
@@ -14,7 +14,9 @@ export function parserInputWithZodSchema<T extends ZodRawShape>(
 	} else {
 		return {
 			success: false,
-			message: zodResult.error?.issues.map(({ message }) => message).join(", "),
+			message: zodResult.error?.issues
+				.map(({ message }) => message)
+				.join(", "),
 			// data: {},
 		};
 	}

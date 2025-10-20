@@ -3,7 +3,7 @@ import connectToDB from "@/db/dbConnect";
 import Messages from "@/model/messages.model";
 import { isValidObjectId } from "mongoose";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
 	request: NextRequest,
@@ -50,8 +50,7 @@ export async function DELETE(
 				{ status: 401 },
 			);
 		}
-		const messageDeleteResponse =
-			await Messages.findByIdAndDelete(messageId);
+		const messageDeleteResponse = await Messages.findByIdAndDelete(messageId);
 
 		if (!messageDeleteResponse) {
 			return NextResponse.json(

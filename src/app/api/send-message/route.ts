@@ -3,7 +3,7 @@ import Messages from "@/model/messages.model";
 import Users from "@/model/users.model";
 import { messageSchema } from "@/schema/message.schema";
 import { parserInputWithZodSchema } from "@/utils/validations";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
 	try {

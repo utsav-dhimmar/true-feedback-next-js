@@ -11,18 +11,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { userSignupSchema } from "@/schema/signup.schema";
-import { ApiResponse } from "@/types/ApiResponse";
+import type { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios, { AxiosError } from "axios";
+import axios, { type AxiosError } from "axios";
 import { Loader } from "lucide-react";
 import Link from "next/link";
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useDebounceValue } from "usehooks-ts";
-import * as z from "zod";
+import type * as z from "zod";
 
 type Inputs = z.infer<typeof userSignupSchema>;
 

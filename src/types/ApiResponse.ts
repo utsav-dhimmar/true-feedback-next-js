@@ -1,8 +1,8 @@
-import { IMessage } from "@/model/messages.model";
+import type { IMessage } from "@/model/messages.model";
 
 export interface ApiResponse {
 	success: boolean;
 	message: string;
-	isAcceptingMessage?: boolean;
+	isAcceptingMessages?: boolean;
 	messages?: Array<IMessage>;
 }

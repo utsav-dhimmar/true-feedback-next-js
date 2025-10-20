@@ -9,7 +9,7 @@ import Users from "@/model/users.model";
 import { acceptingMessageSchema } from "@/schema/message.schema";
 import { parserInputWithZodSchema } from "@/utils/validations";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
 	try {
@@ -26,9 +26,7 @@ export async function GET(request: NextRequest) {
 			);
 		}
 		const user = session.user;
-		const userInfo = await Users.findById(user._id).select(
-			"+isAcceptingMessages",
-		);
+		const userInfo = await Users.findById(user._id).exec();
 
 		if (!userInfo) {
 			return Response.json(
@@ -111,7 +109,7 @@ export async function POST(request: NextRequest) {
 		return NextResponse.json(
 			{
 				success: true,
-				message: "accept message status updated successfully",
+				message: `accept message status updated successfully new status ${data?.acceptMessage}`,
 			},
 			{ status: 200 },
 		);

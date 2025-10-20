@@ -9,7 +9,7 @@ import connectToDB from "@/db/dbConnect";
 import Users from "@/model/users.model";
 import { usernameAndVerificationCodeSchema } from "@/schema/verify.schema";
 import { parserInputWithZodSchema } from "@/utils/validations";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
 	try {
