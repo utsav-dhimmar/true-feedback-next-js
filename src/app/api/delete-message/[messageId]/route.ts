@@ -50,16 +50,11 @@ export async function DELETE(
 				{ status: 401 },
 			);
 		}
-		const messageDeleteResponse = await Messages.findByIdAndDelete(messageId);
+		const messageDeleteResponse =
+			await Messages.findByIdAndDelete(messageId);
 
 		if (!messageDeleteResponse) {
-			return NextResponse.json(
-				{
-					message: "Unable to delete message",
-					success: false,
-				},
-				{ status: 500 },
-			);
+			throw new Error("unable to delete message");
 		}
 		return NextResponse.json(
 			{

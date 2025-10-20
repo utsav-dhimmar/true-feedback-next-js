@@ -25,11 +25,15 @@ interface MessageCard {
 export default function MessageCard({ message, onMessageDelete }: MessageCard) {
 	const handleMessageDelete = async () => {
 		try {
-			const res = await axios.delete(
+			const res = await axios.delete<ApiResponse>(
 				`/api/delete-message/${message._id}`,
-				{},
 			);
-			console.log(res);
+			onMessageDelete(message._id);
+			if (res.status === 200) {
+				toast.success(res.data.message);
+			} else {
+				toast.warning(res.data.message);
+			}
 		} catch (error) {
 			const axiosErrors = error as AxiosError<ApiResponse>;
 			const message = axiosErrors.response?.data.message;
@@ -43,7 +47,7 @@ export default function MessageCard({ message, onMessageDelete }: MessageCard) {
 				<CardHeader>
 					<div className="flex justify-between items-center">
 						<CardTitle>{message.content}</CardTitle>
-						<span>{message.createdAt.toLocaleString("")}</span>
+
 						<AlertDialog>
 							<AlertDialogTrigger>
 								{/*<Button>*/}
@@ -58,8 +62,8 @@ export default function MessageCard({ message, onMessageDelete }: MessageCard) {
 									</AlertDialogTitle>
 									<AlertDialogDescription>
 										This action cannot be undone. This will
-										permanently delete your account and
-										remove your data from our servers.
+										permanently delete this messages from
+										our servers.
 									</AlertDialogDescription>
 								</AlertDialogHeader>
 								<AlertDialogFooter>
@@ -74,6 +78,9 @@ export default function MessageCard({ message, onMessageDelete }: MessageCard) {
 								</AlertDialogFooter>
 							</AlertDialogContent>
 						</AlertDialog>
+					</div>
+					<div className="text-sm">
+						{new Date(message.createdAt).toLocaleString("")}
 					</div>
 				</CardHeader>
 			</Card>

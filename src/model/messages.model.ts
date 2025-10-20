@@ -1,12 +1,8 @@
-import mongoose, {
-	type Document,
-	type ObjectId,
-	Schema,
-	model,
-} from "mongoose";
+import mongoose, { type Document, ObjectId, Schema, model } from "mongoose";
 
 export interface IMessage extends Document {
-	userId: ObjectId; // id of user which message bellongs to the user
+	_id: string | ObjectId;
+	userId: string | ObjectId; // id of user which message bellongs to the user
 	content: string;
 	createdAt: Date;
 	updatedAt: Date;

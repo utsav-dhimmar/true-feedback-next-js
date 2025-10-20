@@ -1,12 +1,14 @@
 "use client";
+
 import MessageCard from "@/components/MessageCard";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { acceptingMessageSchema } from "@/schema/message.schema";
 import type { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { type AxiosError } from "axios";
-import { Copy } from "lucide-react";
+import { Copy, Loader2, RefreshCcw } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -16,15 +18,15 @@ export interface IMessageCard {
 	_id: string;
 	userId: string;
 	content: string;
-	createdAt: string | Date;
-	updatedAt: string | Date;
-	__v: number;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 export default function DashboardPage() {
 	const [loading, setLoading] = useState(false);
 	const [allMessage, setAllMessages] = useState<IMessageCard[]>([]);
 	const { data: session } = useSession();
+
 	const user = session?.user;
 
 	const { register, watch, setValue } = useForm({
@@ -32,14 +34,12 @@ export default function DashboardPage() {
 	});
 
 	const acceptMessages = watch("acceptMessage", false);
-	console.log("acceptMessages value on first render ", acceptMessages);
 
 	const fetchData = useCallback(async () => {
 		setLoading(true);
 		try {
-			const res = await axios.get("/api/get-message");
-			setAllMessages(res.data.data || []);
-			// console.log(res);
+			const res = await axios.get<ApiResponse>("/api/get-message");
+			setAllMessages(res.data.messages || []);
 		} catch (error) {
 			const axiosErrors = error as AxiosError<ApiResponse>;
 			const message = axiosErrors.response?.data.message;
@@ -51,7 +51,7 @@ export default function DashboardPage() {
 
 	const handleMessageDelete = (messageId: string) => {
 		setAllMessages(
-			allMessage?.filter(message => message._id !== messageId),
+			allMessage?.filter(message => message._id.toString() !== messageId),
 		);
 	};
 
@@ -69,7 +69,6 @@ export default function DashboardPage() {
 		setLoading(true);
 		try {
 			const res = await axios.get<ApiResponse>("/api/accept-message");
-
 			setValue("acceptMessage", res.data.isAcceptingMessages!);
 		} catch (error) {
 			const axiosErrors = error as AxiosError<ApiResponse>;
@@ -104,12 +103,17 @@ export default function DashboardPage() {
 	};
 
 	if (!session || !session.user) {
-		return <div> Login first</div>;
+		return (
+			<div className="h-screen">
+				<Loader2 />
+			</div>
+		);
 	}
+
 	return (
 		<main>
-			<div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
-				<h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
+			<div className="my-6 mx-2 md:mx-8 lg:mx-auto p-2 bg-white rounded w-full max-w-6xl">
+				<h1 className="text-4xl font-bold mb-2">User Dashboard</h1>
 				<div className="mb-4">
 					<h2 className="text-lg font-bold mb-2">
 						Copy your unique link
@@ -119,6 +123,7 @@ export default function DashboardPage() {
 							type="text"
 							value={profileUrl}
 							disabled
+							readOnly
 							className="input input-bordered w-full p-2 mr-2"
 						/>
 						<Button onClick={copyToClipboard}>
@@ -137,6 +142,21 @@ export default function DashboardPage() {
 						Accept Messages: {acceptMessages ? "On" : "Off"}
 					</span>
 				</div>
+				<Separator />
+				<Button
+					className="mt-4"
+					variant="outline"
+					onClick={e => {
+						e.preventDefault();
+						fetchData();
+					}}
+				>
+					{loading ? (
+						<Loader2 className="h-4 w-4 animate-spin" />
+					) : (
+						<RefreshCcw className="h-4 w-4" />
+					)}
+				</Button>
 				<div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
 					{allMessage && allMessage.length > 0 ? (
 						allMessage.map(messageData => (

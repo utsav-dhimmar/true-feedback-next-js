@@ -1,4 +1,10 @@
-import type { IMessage } from "@/model/messages.model";
+export interface IMessage {
+	_id: string;
+	userId: string;
+	content: string;
+	createdAt: Date;
+	updatedAt: Date;
+}
 
 export interface ApiResponse {
 	success: boolean;
