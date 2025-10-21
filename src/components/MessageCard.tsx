@@ -26,7 +26,7 @@ export default function MessageCard({ message, onMessageDelete }: MessageCard) {
 	const handleMessageDelete = async () => {
 		try {
 			const res = await axios.delete<ApiResponse>(
-				`/api/delete-message/${message._id}`,
+				`/api/message/delete-message/${message._id}`,
 			);
 			onMessageDelete(message._id);
 			if (res.status === 200) {

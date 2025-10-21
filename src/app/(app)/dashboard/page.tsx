@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { type AxiosError } from "axios";
 import { Copy, Loader2, RefreshCcw } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useCallback, useEffect, useState, useDebugValue } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -39,7 +39,7 @@ export default function DashboardPage() {
 	const fetchData = useCallback(async () => {
 		setLoading(true);
 		try {
-			const res = await axios.get<ApiResponse>("/api/get-message");
+			const res = await axios.get<ApiResponse>("/api/message/get-message");
 			setAllMessages(res.data.messages || []);
 		} catch (error) {
 			const axiosErrors = error as AxiosError<ApiResponse>;
@@ -72,8 +72,8 @@ export default function DashboardPage() {
 	const getAcceptMessageStatus = useCallback(async () => {
 		setLoading(true);
 		try {
-			const res = await axios.get<ApiResponse>("/api/accept-message");
-			setValue("acceptMessage", res.data.isAcceptingMessages!);
+			const res = await axios.get<ApiResponse>("/api/message/accept-message");
+			setValue("acceptMessage", res.data.isAcceptingMessages as boolean);
 		} catch (error) {
 			const axiosErrors = error as AxiosError<ApiResponse>;
 			const message = axiosErrors.response?.data.message;
@@ -92,7 +92,7 @@ export default function DashboardPage() {
 	const handleSwitchChanges = async () => {
 		setLoading(true);
 		try {
-			const res = await axios.post<ApiResponse>("/api/accept-message", {
+			const res = await axios.post<ApiResponse>("/api/message/accept-message", {
 				acceptingMessage: !acceptMessages,
 			});
 			setValue("acceptMessage", !acceptMessages);

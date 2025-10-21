@@ -41,7 +41,7 @@ export default function Page() {
 	const [loading, setLoading] = useState(false);
 
 	const { error, complete, completion, isLoading } = useCompletion({
-		api: "/api/suggest-message",
+		api: "/api/message/suggest-message",
 		initialCompletion:
 			"What are you doing?||What is Love? || What do you do for living?",
 	});
@@ -61,7 +61,7 @@ export default function Page() {
 	const handleSendMessage = async (message: string) => {
 		setLoading(true);
 		try {
-			const res = await axios.post<ApiResponse>("/api/send-message", {
+			const res = await axios.post<ApiResponse>("/api/message/send-message", {
 				content: message,
 				username,
 			});
