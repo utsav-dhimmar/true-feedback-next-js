@@ -74,7 +74,7 @@ export default function MessageCard({ message, onMessageDelete }: MessageCard) {
 						</AlertDialog>
 					</div>
 					<div className="text-sm">
-						{new Date(message.createdAt).toLocaleString("")}
+						{new Date(message.createdAt).toLocaleString("en-IN")}
 					</div>
 				</CardHeader>
 			</Card>

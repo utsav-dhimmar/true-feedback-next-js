@@ -48,13 +48,21 @@ export const nextAuthOption: NextAuthOptions = {
 					);
 					if (!isCorrectPassword) {
 						throw new Error("Invalid Credentials");
-					} else {
-						console.log("from authorize", user);
-						return user;
 					}
+					// console.log("from authorize", user);
+					return {
+						id: String(user._id),
+						_id: String(user._id),
+						email: user.email,
+						username: user.username,
+						isVerified: user.isVerified,
+						isAcceptingMessages: user.isAcceptingMessages,
+					};
 				} catch (error: any) {
 					console.log("Error ", error);
-					throw new Error(error.message || "Somthing went wrong");
+					throw new Error(
+						error.message || "Somthing went wrong in authentication",
+					);
 				}
 			},
 		}),
@@ -63,7 +71,7 @@ export const nextAuthOption: NextAuthOptions = {
 		async jwt({ token, user }) {
 			// console.log("start of jwt ", "token:- ", token, "user:- ", user);
 			if (user) {
-				token._id = user._id?.toString();
+				token._id = String(user._id);
 				token.isVerified = user.isVerified;
 				token.isAcceptingMessages = user.isAcceptingMessages;
 				token.username = user.username;
@@ -86,7 +94,7 @@ export const nextAuthOption: NextAuthOptions = {
 			// 	token,
 			// );
 			if (token) {
-				session.user._id = token._id?.toString();
+				session.user._id = String(token._id);
 				session.user.isAcceptingMessages = token.isAcceptingMessages;
 				session.user.isVerified = token.isVerified;
 				session.user.username = token.username;

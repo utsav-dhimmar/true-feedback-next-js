@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { type AxiosError } from "axios";
 import { Copy, Loader2, RefreshCcw } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useDebugValue } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -25,6 +25,7 @@ export interface IMessageCard {
 export default function DashboardPage() {
 	const [loading, setLoading] = useState(false);
 	const [allMessage, setAllMessages] = useState<IMessageCard[]>([]);
+	const [profileUrl, setProfileUrl] = useState("");
 	const { data: session } = useSession();
 
 	const user = session?.user;
@@ -55,8 +56,11 @@ export default function DashboardPage() {
 		);
 	};
 
-	const baseUrl = `${window.location.origin}`;
-	const profileUrl = `${baseUrl}/u/${user?.username}`;
+	useEffect(() => {
+		const baseUrl = `${window.location.origin}`;
+		const profileUrl = `${baseUrl}/u/${user?.username}`;
+		setProfileUrl(profileUrl);
+	}, [user?.username]);
 
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(profileUrl);
