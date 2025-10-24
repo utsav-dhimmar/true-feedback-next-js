@@ -2,7 +2,7 @@ import { getToken } from "next-auth/jwt";
 import { type NextRequest, NextResponse } from "next/server";
 export { default } from "next-auth/middleware";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
 	const token = await getToken({
 		req: request,
 	});
