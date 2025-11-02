@@ -1,7 +1,21 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { redirect, usePathname } from "next/navigation";
 import { Button } from "./ui/button";
+
+export function VisitDashboardBtn() {
+	const pathname = usePathname();
+	return pathname !== "/dashboard" ? (
+		<Button
+			className="w-full md:w-auto"
+			variant={"outline"}
+			onClick={() => redirect("/dashboard")}
+		>
+			Dashboard
+		</Button>
+	) : null;
+}
 
 export default function NavBar() {
 	const { data: session } = useSession();
@@ -18,18 +32,21 @@ export default function NavBar() {
 							<span className="m-1">
 								Welcome {user?.username || user?.email || "user"}
 							</span>
-							<Button
-								className="w-full md:w-auto"
-								variant={"outline"}
-								onClick={() =>
-									signOut({
-										redirect: true,
-										callbackUrl: "/sign-in",
-									})
-								}
-							>
-								Sign out
-							</Button>
+							<div className="flex gap-2 flex-col md:flex-row">
+								<Button
+									className="w-full md:w-auto"
+									variant={"outline"}
+									onClick={() =>
+										signOut({
+											redirect: true,
+											callbackUrl: "/sign-in",
+										})
+									}
+								>
+									Sign out
+								</Button>
+								<VisitDashboardBtn />
+							</div>
 						</>
 					) : (
 						<Link href={"/sign-in"}>

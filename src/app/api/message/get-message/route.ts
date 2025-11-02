@@ -5,6 +5,14 @@ import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
 
+export interface MessageType {
+	id: string;
+	userId: string;
+	content: string;
+	createdAt: string;
+	updatedAt: string;
+}
+
 export async function GET(request: NextRequest) {
 	try {
 		await connectToDB();
@@ -23,7 +31,7 @@ export async function GET(request: NextRequest) {
 
 		// todo add more data if require
 
-		const response = await Messages.aggregate([
+		const response: MessageType[] = await Messages.aggregate([
 			{
 				// find data for current user , not from all
 				$match: {
@@ -36,6 +44,7 @@ export async function GET(request: NextRequest) {
 				},
 			},
 		]);
+		console.log(response);
 		// console.log("get-message response", response);
 		if (!response) {
 			return NextResponse.json(
@@ -48,8 +57,46 @@ export async function GET(request: NextRequest) {
 				},
 			);
 		}
+		const helper = [
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December",
+		];
+
+		const chartDataHelper = [
+			{ month: "January", messageCount: 0 },
+			{ month: "February", messageCount: 0 },
+			{ month: "March", messageCount: 0 },
+			{ month: "April", messageCount: 0 },
+			{ month: "May", messageCount: 0 },
+			{ month: "June", messageCount: 0 },
+			{ month: "July", messageCount: 0 },
+			{ month: "August", messageCount: 0 },
+			{ month: "September", messageCount: 0 },
+			{ month: "October", messageCount: 0 },
+			{ month: "November", messageCount: 0 },
+			{ month: "December", messageCount: 0 },
+		];
+
+		const charData = response.reduce((acc, curr) => {
+			const postDate = new Date(curr.createdAt);
+			const postMonth = helper[postDate.getMonth()];
+			const postObj = acc.find(({ month }) => month === postMonth);
+			if (postObj) postObj.messageCount += 1;
+			return acc;
+		}, chartDataHelper);
+
 		return NextResponse.json(
-			{ success: true, messages: response },
+			{ success: true, messages: response, charData },
 			{ status: 200 },
 		);
 	} catch (error) {

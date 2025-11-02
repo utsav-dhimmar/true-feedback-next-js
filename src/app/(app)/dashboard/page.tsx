@@ -1,6 +1,7 @@
 "use client";
 
 import MessageCard from "@/components/MessageCard";
+import { MessageCharts } from "@/components/MessageCharts";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
@@ -22,9 +23,25 @@ export interface IMessageCard {
 	updatedAt: Date;
 }
 
+interface AllMessage {
+	allMessages: IMessageCard[];
+	charData: { month: string; messageCount: number }[];
+}
+
+interface ApiResponseFormGetMessages {
+	success: boolean;
+	message: string;
+	isAcceptingMessages?: boolean;
+	messages: IMessageCard[];
+	charData: { month: string; messageCount: number }[];
+}
+
 export default function DashboardPage() {
 	const [loading, setLoading] = useState(false);
-	const [allMessage, setAllMessages] = useState<IMessageCard[]>([]);
+	const [allMessage, setAllMessages] = useState<AllMessage>({
+		allMessages: [],
+		charData: [],
+	});
 	const [profileUrl, setProfileUrl] = useState("");
 	const { data: session } = useSession();
 
@@ -39,10 +56,15 @@ export default function DashboardPage() {
 	const fetchData = useCallback(async () => {
 		setLoading(true);
 		try {
-			const res = await axios.get<ApiResponse>("/api/message/get-message");
-			setAllMessages(res.data.messages || []);
+			const res = await axios.get<ApiResponseFormGetMessages>(
+				"/api/message/get-message",
+			);
+			setAllMessages({
+				allMessages: res.data.messages || [],
+				charData: res.data.charData || [],
+			});
 		} catch (error) {
-			const axiosErrors = error as AxiosError<ApiResponse>;
+			const axiosErrors = error as AxiosError<ApiResponseFormGetMessages>;
 			const message = axiosErrors.response?.data.message;
 			toast.error(message);
 		} finally {
@@ -51,9 +73,12 @@ export default function DashboardPage() {
 	}, []);
 
 	const handleMessageDelete = (messageId: string) => {
-		setAllMessages(
-			allMessage?.filter((message) => message._id.toString() !== messageId),
-		);
+		setAllMessages((prevData) => ({
+			...prevData,
+			allMessages: prevData.allMessages.filter(
+				(message) => message._id.toString() !== messageId,
+			),
+		}));
 	};
 
 	useEffect(() => {
@@ -145,6 +170,9 @@ export default function DashboardPage() {
 					</span>
 				</div>
 				<Separator />
+				<MessageCharts chartData={allMessage.charData} />
+				{/*<MessageCharts />*/}
+				<Separator />
 				<Button
 					className="mt-4"
 					variant="outline"
@@ -159,9 +187,10 @@ export default function DashboardPage() {
 						<RefreshCcw className="h-4 w-4" />
 					)}
 				</Button>
+				<Separator />
 				<div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-					{allMessage && allMessage.length > 0 ? (
-						allMessage.map((messageData) => (
+					{allMessage && allMessage.allMessages.length > 0 ? (
+						allMessage.allMessages.map((messageData) => (
 							<MessageCard
 								message={messageData}
 								key={messageData._id}
