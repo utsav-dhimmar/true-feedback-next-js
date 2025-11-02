@@ -1,12 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
@@ -57,7 +57,8 @@ export default function SignInPage() {
 		} catch (error) {
 			const axiosErrors = error as AxiosError<ApiResponse>;
 			const message =
-				axiosErrors?.response?.data?.message ?? "error in username check";
+				axiosErrors?.response?.data?.message ??
+				"error in username check";
 			toast.error(message);
 		} finally {
 			setLoading(false);
@@ -71,10 +72,15 @@ export default function SignInPage() {
 					<h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
 						Join True Feedback
 					</h1>
-					<p className="mb-4">Sign up to start your anonymous adventure</p>
+					<p className="mb-4">
+						Sign up to start your anonymous adventure
+					</p>
 				</div>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2.5">
+					<form
+						onSubmit={form.handleSubmit(onSubmit)}
+						className="space-y-2.5"
+					>
 						{/* email */}
 						<FormField
 							name="email"
@@ -87,7 +93,10 @@ export default function SignInPage() {
 									</FormControl>
 									{form.formState.errors.email && (
 										<FormMessage>
-											{form.formState.errors.email.message}
+											{
+												form.formState.errors.email
+													.message
+											}
 										</FormMessage>
 									)}
 								</FormItem>
@@ -110,17 +119,29 @@ export default function SignInPage() {
 									</FormControl>
 									{form.formState.errors.password && (
 										<FormMessage>
-											{form.formState.errors.password.message}
+											{
+												form.formState.errors.password
+													.message
+											}
 										</FormMessage>
 									)}
 								</FormItem>
 							)}
 						/>
 
-						<Button disabled={loading} type="submit" className="w-full">
+						<Button
+							disabled={loading}
+							type="submit"
+							className="w-full"
+						>
 							{loading && <Spinner />} Submit
 						</Button>
-						<Button onClick={() => signIn("google")} className="w-full">
+						<Button
+							type="button"
+							disabled={loading}
+							onClick={() => signIn("google")}
+							className="w-full"
+						>
 							Coutine With Google
 						</Button>
 						<div className="text-center mt-4">

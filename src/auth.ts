@@ -61,7 +61,8 @@ export const nextAuthOption: NextAuthOptions = {
 				} catch (error: any) {
 					console.log("Error ", error);
 					throw new Error(
-						error.message || "Somthing went wrong in authentication",
+						error.message ||
+							"Somthing went wrong in authentication",
 					);
 				}
 			},
@@ -116,15 +117,5 @@ export const nextAuthOption: NextAuthOptions = {
 	session: {
 		strategy: "jwt",
 	},
-	logger: {
-		error(code, metadata) {
-			console.error("error", code, metadata);
-		},
-		warn(code) {
-			console.warn("warn", code);
-		},
-		debug(code, metadata) {
-			console.debug("debug", code, metadata);
-		},
-	},
+	debug: process.env.NODE_ENV === "development" ? true : false,
 };
