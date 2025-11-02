@@ -1,6 +1,6 @@
 import { getToken } from "next-auth/jwt";
 import { type NextRequest, NextResponse } from "next/server";
-export { default } from "next-auth/middleware";
+// export { default } from "next-auth/middleware";
 
 export async function proxy(request: NextRequest) {
 	const token = await getToken({
@@ -13,11 +13,15 @@ export async function proxy(request: NextRequest) {
 	const privatePaths = ["/dashboard"];
 
 	if (token && publicPaths.includes(currentPath)) {
-		return NextResponse.redirect(new URL("/dashboard", request.url));
+		return NextResponse.redirect(
+			new URL("/dashboard", request.nextUrl.origin),
+		);
 	}
 
 	if (!token && privatePaths.includes(currentPath)) {
-		return NextResponse.redirect(new URL("/sign-in", request.url));
+		return NextResponse.redirect(
+			new URL("/sign-in", request.nextUrl.origin),
+		);
 	}
 
 	return NextResponse.next();
@@ -25,5 +29,5 @@ export async function proxy(request: NextRequest) {
 
 // routes where middleware we went to run
 export const config = {
-	matcher: ["/sign-in", "/sign-up", "/", "/verify", "/dashboard"],
+	matcher: ["/sign-in", "/sign-up", "/verify", "/dashboard"],
 };
