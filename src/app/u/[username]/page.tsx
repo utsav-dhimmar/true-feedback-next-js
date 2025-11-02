@@ -28,6 +28,7 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+
 import type z from "zod";
 
 type InputType = z.infer<typeof messageSchema>;
@@ -146,16 +147,20 @@ export default function Page() {
 						<CardTitle>Messages</CardTitle>
 					</CardHeader>
 					<CardContent className="flex flex-col space-y-4">
-						{suggestedMessages(completion).map((message) => (
-							<Button
-								variant="outline"
-								className="mb-2 h-auto whitespace-normal break-words"
-								onClick={() => handleSendMessage(message)}
-								key={message}
-							>
-								{message}
-							</Button>
-						))}
+						{!isLoading ? (
+							suggestedMessages(completion).map((message) => (
+								<Button
+									variant="outline"
+									className="mb-2 h-auto whitespace-normal break-words"
+									onClick={() => handleSendMessage(message)}
+									key={message}
+								>
+									{message}
+								</Button>
+							))
+						) : (
+							<Spinner />
+						)}
 						{error && (
 							<div>
 								<p className="text-destructive">{error.message}</p>

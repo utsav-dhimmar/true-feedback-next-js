@@ -116,9 +116,9 @@ export default function DashboardPage() {
 
 	return (
 		<main>
-			<div className="my-6  md:mx-8 lg:mx-auto p-2 bg-white rounded w-full max-w-6xl">
+			<div className="my-6 lg:mx-auto p-2 bg-background text-foreground rounded w-full max-w-6xl">
 				<h1 className="text-4xl font-bold mb-2">User Dashboard</h1>
-				<div className="mb-4">
+				<div className="mb-4 ">
 					<h2 className="text-lg font-bold mb-2">Copy your unique link</h2>
 					<div className="flex items-center">
 						<input
@@ -159,7 +159,7 @@ export default function DashboardPage() {
 						<RefreshCcw className="h-4 w-4" />
 					)}
 				</Button>
-				<div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 					{allMessage && allMessage.length > 0 ? (
 						allMessage.map((messageData) => (
 							<MessageCard
@@ -169,7 +169,9 @@ export default function DashboardPage() {
 							/>
 						))
 					) : (
-						<p>No messages are found</p>
+						<div className="text-center font-bold text-2xl">
+							<p>No messages are found</p>
+						</div>
 					)}
 				</div>
 			</div>

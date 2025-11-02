@@ -12,17 +12,17 @@ import { Mail } from "lucide-react";
 
 const MESSAGES = [
 	{
-		title: "Message from User123",
+		title: "Message from Elon Musk",
 		content: "Hey, how are you doing today?",
 		received: "10 minutes ago",
 	},
 	{
-		title: "Message from SecretAdmirer",
+		title: "Message from Sam Altman",
 		content: "I really liked your recent post!",
 		received: "2 hours ago",
 	},
 	{
-		title: "Message from MysteryGuest",
+		title: "Message from Tony Stark",
 		content: "Do you have any book recommendations?",
 		received: "1 day ago",
 	},
@@ -31,7 +31,7 @@ const MESSAGES = [
 export default function Home() {
 	return (
 		<>
-			<div className="flex-grow flex flex-col items-center justify-center px-4 md:px-24 py-12 bg-gray-800 text-white">
+			<div className="flex-grow flex flex-col items-center justify-center px-4 md:px-24 py-12 bg-background">
 				<section className="text-center mb-8 md:mb-12">
 					<h1 className="text-3xl md:text-5xl font-bold">
 						Dive into the World of Anonymous Feedback
@@ -49,14 +49,20 @@ export default function Home() {
 					]}
 				>
 					<CarouselContent>
-						{MESSAGES.map(({ title }) => (
+						{MESSAGES.map(({ title, content, received }) => (
 							<CarouselItem key={title}>
 								<Card>
 									<CardHeader>
 										<CardTitle>{title}</CardTitle>
 									</CardHeader>
-									<CardContent className="flex flex-col md:flex-row items-start space-y-2 md:space-y-0 md:space-x-4">
+									<CardContent className="flex flex-col md:flex-row items-start space-y-2 md:space-y-0 md:space-x-4 ">
 										<Mail className="flex-shrink-0" />
+										<div>
+											<p>{content}</p>
+											<p className="text-xs text-muted-foreground">
+												{received}
+											</p>
+										</div>
 									</CardContent>
 								</Card>
 							</CarouselItem>
@@ -66,7 +72,7 @@ export default function Home() {
 					<CarouselNext />
 				</Carousel>
 			</div>
-			<footer className="text-center p-4 md:p-6 bg-gray-900 text-white">
+			<footer className="text-center p-4 md:p-6 bg-muted">
 				© 2023 True Feedback. All rights reserved.
 			</footer>
 		</>

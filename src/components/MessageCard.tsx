@@ -42,42 +42,40 @@ export default function MessageCard({ message, onMessageDelete }: MessageCard) {
 		}
 	};
 	return (
-		<div>
-			<Card className="w-full max-w-sm">
-				<CardHeader>
-					<div className="flex justify-between items-center">
-						<CardTitle>{message.content}</CardTitle>
+		<Card className="w-full max-w-sm">
+			<CardHeader>
+				<div className="flex justify-between items-center">
+					<CardTitle>{message.content}</CardTitle>
 
-						<AlertDialog>
-							<AlertDialogTrigger>
-								{/*<Button>*/}
-								<Trash2 className="text-red-400"></Trash2>
-								{/*</Button>*/}
-							</AlertDialogTrigger>
-							<AlertDialogContent>
-								<AlertDialogHeader>
-									<AlertDialogTitle>
-										Do you really want to delete the message?
-									</AlertDialogTitle>
-									<AlertDialogDescription>
-										This action cannot be undone. This will permanently delete
-										this messages from our servers.
-									</AlertDialogDescription>
-								</AlertDialogHeader>
-								<AlertDialogFooter>
-									<AlertDialogCancel>Cancel</AlertDialogCancel>
-									<AlertDialogAction onClick={handleMessageDelete}>
-										Continue
-									</AlertDialogAction>
-								</AlertDialogFooter>
-							</AlertDialogContent>
-						</AlertDialog>
-					</div>
-					<div className="text-sm">
-						{new Date(message.createdAt).toLocaleString("en-IN")}
-					</div>
-				</CardHeader>
-			</Card>
-		</div>
+					<AlertDialog>
+						<AlertDialogTrigger>
+							{/*<Button>*/}
+							<Trash2 className="text-red-400"></Trash2>
+							{/*</Button>*/}
+						</AlertDialogTrigger>
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>
+									Do you really want to delete the message?
+								</AlertDialogTitle>
+								<AlertDialogDescription>
+									This action cannot be undone. This will permanently delete
+									this messages from our servers.
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+							<AlertDialogFooter>
+								<AlertDialogCancel>Cancel</AlertDialogCancel>
+								<AlertDialogAction onClick={handleMessageDelete}>
+									Continue
+								</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
+				</div>
+				<div className="text-sm">
+					{new Date(message.createdAt).toLocaleString("en-IN")}
+				</div>
+			</CardHeader>
+		</Card>
 	);
 }
