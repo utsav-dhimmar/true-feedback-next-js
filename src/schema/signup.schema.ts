@@ -4,9 +4,6 @@ export const usernameValidation = z
 	.string({
 		error: "Enter valid username",
 	})
-	.regex(/^[a-z]+$/, {
-		error: "only characters allowed in username",
-	})
 	.nonempty({
 		error: "username is required",
 	})
@@ -32,7 +29,7 @@ export const uniqueUsernameSchema = z.object({
 export const userSignupSchema = z.object({
 	username: usernameValidation,
 	email: emailValidation,
-	password: passwordValidation,
+	password: passwordValidation.optional(),
 });
 
 export const userSignInSchema = z.object({

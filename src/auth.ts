@@ -9,8 +9,8 @@ export const nextAuthOption: NextAuthOptions = {
 	providers: [
 		// Google
 		GoogleProvider({
-			clientId: process.env.GOOGLE_CLIENT_ID!,
-			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+			clientId: process.env.GOOGLE_CLIENT_ID as string,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
 		}),
 		// Custome
 		CredentialsProvider({
@@ -35,7 +35,7 @@ export const nextAuthOption: NextAuthOptions = {
 					await connectToDB();
 					const user = await Users.findOne({
 						email: email,
-					});
+					}).select("+password");
 					if (!user) {
 						throw new Error("User not found with this email");
 					}
@@ -44,7 +44,7 @@ export const nextAuthOption: NextAuthOptions = {
 					}
 					const isCorrectPassword = await comparePassword(
 						password,
-						user.password,
+						user.password as string,
 					);
 					if (!isCorrectPassword) {
 						throw new Error("Invalid Credentials");
@@ -62,17 +62,125 @@ export const nextAuthOption: NextAuthOptions = {
 					console.log("Error ", error);
 					throw new Error(
 						error.message ||
-							"Somthing went wrong in authentication",
+						"Somthing went wrong in authentication",
 					);
 				}
 			},
 		}),
 	],
 	callbacks: {
-		async jwt({ token, user }) {
-			// console.log("start of jwt ", "token:- ", token, "user:- ", user);
-			if (user) {
-				token._id = String(user._id);
+		async signIn({ user, account, profile }) {
+
+			if (account?.provider === "google") {
+				try {
+					await connectToDB();
+					const existingUser = await Users.findOne({
+						email: user.email,
+					});
+
+
+					// if user already exist in db so just store their values in user parameter
+
+					if (existingUser) {
+						user.username = existingUser.username;
+						user._id = existingUser._id as string;
+						user.isVerified = existingUser.isVerified;
+						user.isAcceptingMessages =
+							existingUser.isAcceptingMessages;
+						return true;
+					}
+
+					// may be gmail username already taken, 
+					// add appernd some random number 
+					// do not have user name constrcut it with just random number
+
+					const username =
+						profile?.name?.replaceAll(" ", "") ||
+						`user${Math.floor(Math.random() * 100000)}`;
+
+
+
+					let newUsername = username;
+					// find user with username
+					let userWithUsername = await Users.findOne({
+						username: newUsername,
+					});
+
+
+					// if user with username already exists than just, try with random number
+
+					while (userWithUsername) {
+						newUsername =
+							username + Math.floor(Math.random() * 10000);
+						userWithUsername = await Users.findOne({
+							username: newUsername,
+						});
+					}
+
+					const newUser = await Users.create({
+						username: newUsername,
+						email: user.email,
+						isVerified: true,
+						isAcceptingMessages: true,
+					});
+
+					user.username = newUser.username;
+					user._id = newUser._id as string;
+					user.isVerified = newUser.isVerified;
+					user.isAcceptingMessages = newUser.isAcceptingMessages;
+
+
+					return true;
+				} catch (error) {
+					console.log("Error during google sign in", error);
+					return false;
+				}
+			}
+			return true;
+		},
+		async jwt({ token, user, account }) {
+			if (account?.provider === "google" && user) {
+				try {
+					await connectToDB();
+					let dbUser = await Users.findOne({ email: user.email });
+					if (!dbUser) {
+						const username =
+							user?.name?.replaceAll(" ", "") ||
+							`user${Math.floor(Math.random() * 100000)}`;
+
+						let newUsername = username;
+						let userWithUsername = await Users.findOne({
+							username: newUsername,
+						});
+						while (userWithUsername) {
+							newUsername =
+								username + Math.floor(Math.random() * 10000);
+							userWithUsername = await Users.findOne({
+								username: newUsername,
+							});
+						}
+
+						dbUser = await Users.create({
+							username: newUsername,
+							email: user.email,
+							isVerified: true,
+							isAcceptingMessages: true,
+						});
+					}
+					// Now we have the user from the DB, either found or created
+					token._id = dbUser._id as string;
+					token.isVerified = dbUser.isVerified;
+					token.isAcceptingMessages = dbUser.isAcceptingMessages;
+					token.username = dbUser.username;
+				} catch (error) {
+					console.error(
+						"Error in JWT callback for Google provider",
+						error,
+					);
+				}
+			} else if (user) {
+				// This is for the credentials provider
+				token._id = user._id as string;
 				token.isVerified = user.isVerified;
 				token.isAcceptingMessages = user.isAcceptingMessages;
 				token.username = user.username;
@@ -95,7 +203,7 @@ export const nextAuthOption: NextAuthOptions = {
 			// 	token,
 			// );
 			if (token) {
-				session.user._id = String(token._id);
+				session.user._id = token._id as string;
 				session.user.isAcceptingMessages = token.isAcceptingMessages;
 				session.user.isVerified = token.isVerified;
 				session.user.username = token.username;
@@ -110,7 +218,7 @@ export const nextAuthOption: NextAuthOptions = {
 			return session;
 		},
 	},
-	secret: process.env.NEXTAUTH_SECRET!,
+	secret: process.env.NEXTAUTH_SECRET as string,
 	pages: {
 		signIn: "/sign-in",
 	},

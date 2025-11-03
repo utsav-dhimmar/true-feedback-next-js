@@ -3,7 +3,7 @@ import mongoose, { type Document, Schema, model } from "mongoose";
 interface IUser extends Document {
 	username: string;
 	email: string;
-	password: string;
+	password?: string;
 	isVerified: boolean;
 	verifyCode?: string;
 	verifyCodeExpiry?: Date;
@@ -17,14 +17,14 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
 		username: {
 			type: String,
 			required: [true, "username is required"],
-			unique: [true, "username is should be unique"],
+			unique: true,
 			trim: true,
 			lowercase: true,
 		},
 		email: {
 			type: String,
 			required: [true, "email is required"],
-			unique: [true, "email is should be unique"],
+			unique: true,
 			trim: true,
 			lowercase: true,
 			match: [
@@ -34,7 +34,9 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
 		},
 		password: {
 			type: String,
-			required: [true, "password is required"],
+			required: function (this: any) {
+				return !this.isVerified;
+			},
 		},
 		isVerified: {
 			type: Boolean,
@@ -42,11 +44,15 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
 		},
 		verifyCode: {
 			type: String,
-			required: [true, "verify code is required"],
+			required: function (this: any) {
+				return !this.isVerified;
+			},
 		},
 		verifyCodeExpiry: {
 			type: Date,
-			required: [true, "verifyCodeExpiry is required"],
+			required: function (this: any) {
+				return !this.isVerified;
+			},
 		},
 		isAcceptingMessages: {
 			type: Boolean,

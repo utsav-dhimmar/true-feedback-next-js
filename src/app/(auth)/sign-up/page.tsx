@@ -15,6 +15,7 @@ import type { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { type AxiosError } from "axios";
 import { Loader } from "lucide-react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 
 import { useRouter } from "next/navigation";
@@ -176,6 +177,14 @@ export default function SignupPage() {
 
 						<Button disabled={loading} type="submit" className="w-full">
 							{loading && <Spinner />} Submit
+						</Button>
+						<Button
+							type="button"
+							disabled={loading}
+							onClick={() => signIn("google")}
+							className="w-full"
+						>
+							Coutine With Google
 						</Button>
 						<div className="text-center mt-4">
 							<p>
